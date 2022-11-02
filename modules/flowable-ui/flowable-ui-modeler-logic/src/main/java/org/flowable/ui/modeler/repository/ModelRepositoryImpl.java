@@ -41,7 +41,10 @@ public class ModelRepositoryImpl implements ModelRepository {
 
     @Override
     public Model get(String id) {
-        return sqlSessionTemplate.selectOne(NAMESPACE + "selectModel", id);
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        params.put("tenantId", tenantProvider.getTenantId());
+        return sqlSessionTemplate.selectOne(NAMESPACE + "selectModel", params);
     }
 
     @Override

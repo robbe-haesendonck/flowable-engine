@@ -244,9 +244,10 @@ public class FlowableUiSecurityAutoConfiguration {
             FlowableCommonAppProperties.OAuth2 oAuth2 = commonAppProperties.getSecurity().getOAuth2();
             String authoritiesAttribute = oAuth2.getAuthoritiesAttribute();
             String groupsAttribute = oAuth2.getGroupsAttribute();
+            String tenantAttribute = oAuth2.getTenantAttribute();
             Collection<String> defaultAuthorities = oAuth2.getDefaultAuthorities();
             Collection<String> defaultGroups = oAuth2.getDefaultGroups();
-            return new FlowableOAuth2GrantedAuthoritiesMapper(authoritiesAttribute, groupsAttribute, defaultAuthorities, defaultGroups);
+            return new FlowableOAuth2GrantedAuthoritiesMapper(authoritiesAttribute, groupsAttribute, tenantAttribute, defaultAuthorities, defaultGroups);
         }
 
         @Bean
@@ -294,6 +295,7 @@ public class FlowableUiSecurityAutoConfiguration {
             mapper.from(oAuth2.getLastNameAttribute()).to(currentUserProvider::setLastNameKey);
             mapper.from(oAuth2.getFullNameAttribute()).to(currentUserProvider::setFullNameKey);
             mapper.from(oAuth2.getEmailAttribute()).to(currentUserProvider::setEmailKey);
+            mapper.from(oAuth2.getTenantAttribute()).to(currentUserProvider::setTenantKey);
 
             return currentUserProvider;
         }

@@ -354,6 +354,7 @@ flowableModeler
 	              	$rootScope.account = data;
 	               	$rootScope.invalidCredentials = false;
 	 				$rootScope.authenticated = true;
+	 				console.info(data);
 	          	});
 
 	        $rootScope.logout = function () {

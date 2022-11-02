@@ -15,11 +15,14 @@ package org.flowable.ui.common.rest.idm;
 import java.util.Map;
 import java.util.StringJoiner;
 
+import org.slf4j.Logger;
+
 import org.apache.commons.lang3.StringUtils;
 import org.flowable.ui.common.model.GroupRepresentation;
 import org.flowable.ui.common.model.UserRepresentation;
 import org.flowable.ui.common.security.SecurityScope;
 import org.flowable.ui.common.security.SecurityUtils;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
@@ -30,13 +33,17 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
  */
 public class OAuth2CurrentUserProvider implements CurrentUserProvider {
 
+    protected static final Logger LOGGER = LoggerFactory.getLogger(OAuth2CurrentUserProvider.class);
+
     protected String firstNameKey;
     protected String lastNameKey;
     protected String fullNameKey;
     protected String emailKey;
+    protected String tenantKey;
 
     @Override
     public UserRepresentation getCurrentUser(Authentication authentication) {
+        LOGGER.info("OAUTH | Getting current Authentication");
         OAuth2User principal = (OAuth2User) authentication.getPrincipal();
         UserRepresentation userRepresentation;
         if (principal instanceof OidcUser) {
@@ -60,13 +67,20 @@ public class OAuth2CurrentUserProvider implements CurrentUserProvider {
         return userRepresentation;
     }
 
+    // https://www.baeldung.com/keycloak-custom-user-attributes
     protected UserRepresentation getCurrentUser(OidcUser user) {
+        LOGGER.info("OAUTH | Getting current OidcUser");
         Map<String, Object> userAttributes = user.getAttributes();
 
         UserRepresentation userRepresentation = new UserRepresentation();
         userRepresentation.setId(user.getName());
         userRepresentation.setFirstName(getAttribute(firstNameKey, userAttributes, user.getGivenName()));
         userRepresentation.setLastName(getAttribute(lastNameKey, userAttributes, user.getFamilyName()));
+
+        // Add tenantId
+        LOGGER.info("Got tenant: " + user.getClaimAsString(tenantKey));
+        userRepresentation.setTenantId(user.getClaimAsString(tenantKey));
+
         String fullName = getAttribute(fullNameKey, userAttributes, user.getFullName());
         if (StringUtils.isBlank(fullName)) {
             StringJoiner joiner = new StringJoiner(" ");
@@ -92,7 +106,8 @@ public class OAuth2CurrentUserProvider implements CurrentUserProvider {
 
     }
 
-    protected UserRepresentation getCurrentUser(OAuth2User user) {
+    protected UserRepresentation getCurrentUser(OAuth2User user) { // Maybe I can hook here? Lookups on the IDM should still work
+        LOGGER.info("OAUTH | Getting current OAuth2User");
         Map<String, Object> userAttributes = user.getAttributes();
         UserRepresentation userRepresentation = new UserRepresentation();
         userRepresentation.setId(user.getName());
@@ -168,4 +183,8 @@ public class OAuth2CurrentUserProvider implements CurrentUserProvider {
     public void setEmailKey(String emailKey) {
         this.emailKey = emailKey;
     }
+
+    public String getTenantKey() { return tenantKey; }
+
+    public void setTenantKey(String tenantKey) { this.tenantKey = tenantKey; }
 }

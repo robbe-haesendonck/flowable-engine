@@ -194,7 +194,7 @@ public class ModelResource {
      */
     @PostMapping(value = "/rest/models/{modelId}/editor/json")
     public ModelRepresentation saveModel(@PathVariable String modelId, @RequestBody MultiValueMap<String, String> values) {
-
+        LOGGER.info(String.format("Saving model: %s for user with ID %s", modelId, SecurityUtils.getCurrentUserId()));
         // Validation: see if there was another update in the meantime
         long lastUpdated = -1L;
         String lastUpdatedString = values.getFirst("lastUpdated");
@@ -210,6 +210,9 @@ public class ModelResource {
 
         Model model = modelService.getModel(modelId);
         String currentUserId = SecurityUtils.getCurrentUserId();
+        String currentUserTenantId = SecurityUtils.getCurrentUserTenantId();
+        LOGGER.info(String.format("Process will get saved under tenantID: %s", currentUserTenantId));
+        model.setTenantId(currentUserTenantId);
         boolean currentUserIsOwner = model.getLastUpdatedBy().equals(currentUserId);
         String resolveAction = values.getFirst("conflictResolveAction");
 

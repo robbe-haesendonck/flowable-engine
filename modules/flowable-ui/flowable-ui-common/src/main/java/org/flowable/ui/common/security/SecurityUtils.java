@@ -55,6 +55,14 @@ public class SecurityUtils {
         return null;
     }
 
+    public static String getCurrentUserTenantId() {
+        SecurityScope user = getCurrentSecurityScope();
+        if (user != null) {
+            return user.getTenantId();
+        }
+        return null;
+    }
+
     public static SecurityScope getCurrentSecurityScope() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         if (securityContext != null && securityContext.getAuthentication() != null) {

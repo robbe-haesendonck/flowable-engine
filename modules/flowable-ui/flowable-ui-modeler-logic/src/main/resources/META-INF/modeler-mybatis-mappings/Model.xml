@@ -77,6 +77,7 @@
     
     <select id="selectModel" parameterType="string" resultMap="modelResultMap">
         select * from ${prefix}ACT_DE_MODEL where id = #{id, jdbcType=VARCHAR}
+        and tenant_id = #{tenantId, jdbcType=VARCHAR}
     </select>
     
     <select id="selectModelByParentModelId" parameterType="string" resultMap="modelResultMap">

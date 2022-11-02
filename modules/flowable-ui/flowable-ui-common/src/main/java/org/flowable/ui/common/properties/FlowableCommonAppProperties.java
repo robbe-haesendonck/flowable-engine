@@ -339,6 +339,11 @@ public class FlowableCommonAppProperties {
          */
         private String emailAttribute;
 
+        /**
+         * The key of the attribute that holds the tenant of the user.
+         */
+        private String tenantAttribute;
+
         public String getAuthoritiesAttribute() {
             return authoritiesAttribute;
         }
@@ -401,6 +406,14 @@ public class FlowableCommonAppProperties {
 
         public void setEmailAttribute(String emailAttribute) {
             this.emailAttribute = emailAttribute;
+        }
+
+        public String getTenantAttribute() {
+            return tenantAttribute;
+        }
+
+        public void setTenantAttribute(String tenantAttribute) {
+            this.tenantAttribute = tenantAttribute;
         }
     }
 

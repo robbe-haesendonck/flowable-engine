@@ -37,12 +37,14 @@ public class FlowableOAuth2GrantedAuthoritiesMapper implements GrantedAuthoritie
 
     protected final String authoritiesAttribute;
     protected final String groupsAttribute;
+    private final String tenantAttribute;
     protected final Collection<GrantedAuthority> defaultAuthorities;
 
     public FlowableOAuth2GrantedAuthoritiesMapper(String authoritiesAttribute, String groupsAttribute,
-            Collection<String> defaultAuthorities, Collection<String> defaultGroups) {
+            String tenantAttribute, Collection<String> defaultAuthorities, Collection<String> defaultGroups) {
         this.authoritiesAttribute = authoritiesAttribute;
         this.groupsAttribute = groupsAttribute;
+        this.tenantAttribute = tenantAttribute;
         this.defaultAuthorities = new LinkedHashSet<>();
         if (defaultAuthorities != null) {
             for (String defaultAuthority : defaultAuthorities) {
@@ -83,6 +85,12 @@ public class FlowableOAuth2GrantedAuthoritiesMapper implements GrantedAuthoritie
                 }
             }
 
+            if (StringUtils.isNotBlank(tenantAttribute)) {
+                Object claim = oidcUserAuthority.getUserInfo().getClaim(tenantAttribute);
+                String tenantId = claim.toString();
+                newAuthorities.add(SecurityUtils.createTenantAuthority(tenantId));
+            }
+
         } else if (userAuthority != null) {
             if (StringUtils.isNotBlank(authoritiesAttribute)) {
                 Object attribute = userAuthority.getAttributes().get(authoritiesAttribute);
@@ -98,6 +106,12 @@ public class FlowableOAuth2GrantedAuthoritiesMapper implements GrantedAuthoritie
                 for (String group : groups) {
                     newAuthorities.add(SecurityUtils.createGroupAuthority(group));
                 }
+            }
+
+            if (StringUtils.isNotBlank(tenantAttribute)) {
+                Object attribute = userAuthority.getAttributes().get(tenantAttribute);
+                String tenantId = attribute.toString();
+                newAuthorities.add(SecurityUtils.createTenantAuthority(tenantId));
             }
         }
 
