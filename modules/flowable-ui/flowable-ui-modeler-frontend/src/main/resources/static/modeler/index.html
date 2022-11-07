@@ -44,13 +44,13 @@
 </head>
 <body ng-app="flowableModeler" ng-cloak>
     <!--  TODO: Implement tenant switcher  -->
-<!--    <div class="container-fluid" style="position: relative; top: 44px; padding-bottom: 10px; padding-right: 7px;" ng-if="account.tenants.length > 1">-->
-<!--        <div class="tenant-switcher" style="width: 20%;float: right;">-->
-<!--            <select class="form-control" ng-model="account.tenantId" ng-change="changeCurrentTenant()">-->
-<!--                <option ng-repeat="tenant in account.tenants" value="{{tenant.id}}">{{tenant.name}}</option>-->
-<!--            </select>-->
-<!--        </div>-->
-<!--    </div>-->
+    <div class="container-fluid" style="position: relative; top: 44px; padding-bottom: 10px; padding-right: 7px;" ng-if="account.tenantIds.length > 1">
+        <div class="tenant-switcher" style="width: 20%;float: right;">
+            <select class="form-control" ng-model="selectedTenantId" ng-change="changeSelectedTenant()">
+                <option ng-repeat="tenant in account.tenantIds track by $index" value="{{tenant}}">{{tenant}}</option>
+            </select>
+        </div>
+    </div>
     <div class="navbar navbar-fixed-top navbar-inverse" role="navigation" id="main-header">
         <div class="fixed-container">
             <div class="navbar-header">

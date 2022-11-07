@@ -47,6 +47,11 @@ public class FlowableAuthenticationSecurityScope implements SecurityScope {
     }
 
     @Override
+    public Set<String> getTenantIds() {
+        return extractAuthoritiesStartingWith(SecurityUtils.TENANT_PREFIX).collect(Collectors.toSet());
+    }
+
+    @Override
     public boolean hasAuthority(String authority) {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (GrantedAuthority grantedAuthority : authorities) {

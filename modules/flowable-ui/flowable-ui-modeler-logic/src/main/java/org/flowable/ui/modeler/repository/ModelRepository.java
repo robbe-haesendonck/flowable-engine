@@ -26,7 +26,11 @@ public interface ModelRepository {
 
     List<Model> findByModelType(Integer modelType, String sort);
 
+    List<Model> findByModelType(Integer modelType, String sort, String tenantId);
+
     List<Model> findByModelTypeAndFilter(Integer modelType, String filter, String sort);
+
+    List<Model> findByModelTypeAndFilter(Integer modelType, String filter, String sort, String tenantId);
 
     List<Model> findByKeyAndType(String key, Integer modelType);
 

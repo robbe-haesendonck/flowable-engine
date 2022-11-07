@@ -105,8 +105,11 @@ public class FlowableUiSecurityAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public RememberMeServices flowableUiRememberMeService(FlowableCommonAppProperties properties, UserDetailsService userDetailsService,
-            PersistentTokenService persistentTokenService) {
+    public RememberMeServices flowableUiRememberMeService(
+            FlowableCommonAppProperties properties,
+            UserDetailsService userDetailsService,
+            PersistentTokenService persistentTokenService
+    ) {
         return new CustomPersistentRememberMeServices(properties, userDetailsService, persistentTokenService);
     }
 

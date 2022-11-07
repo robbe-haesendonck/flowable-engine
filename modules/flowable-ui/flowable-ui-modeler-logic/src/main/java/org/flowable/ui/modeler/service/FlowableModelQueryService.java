@@ -93,7 +93,7 @@ public class FlowableModelQueryService {
     protected DmnXMLConverter dmnXMLConverter = new DmnXMLConverter();
     protected DmnJsonConverter dmnJsonConverter = new DmnJsonConverter();
 
-    public ResultListDataRepresentation getModels(String filter, String sort, Integer modelType, HttpServletRequest request) {
+    public ResultListDataRepresentation getModels(String filter, String sort, Integer modelType, String tenantId, HttpServletRequest request) {
 
         // need to parse the filterText parameter ourselves, due to encoding issues with the default parsing.
         String filterText = null;
@@ -112,10 +112,10 @@ public class FlowableModelQueryService {
         String validFilter = makeValidFilterText(filterText);
 
         if (validFilter != null) {
-            models = modelRepository.findByModelTypeAndFilter(modelType, validFilter, sort);
+            models = modelRepository.findByModelTypeAndFilter(modelType, validFilter, sort, tenantId);
 
         } else {
-            models = modelRepository.findByModelType(modelType, sort);
+            models = modelRepository.findByModelType(modelType, sort, tenantId);
         }
 
         if (CollectionUtils.isNotEmpty(models)) {

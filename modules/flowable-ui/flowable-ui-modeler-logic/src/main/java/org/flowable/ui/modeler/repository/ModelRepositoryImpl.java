@@ -12,6 +12,7 @@
  */
 package org.flowable.ui.modeler.repository;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,12 +57,29 @@ public class ModelRepositoryImpl implements ModelRepository {
     }
 
     @Override
+    public List<Model> findByModelType(Integer modelType, String sort, String tenantId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("modelType", modelType);
+        params.put("sort", sort);
+        return findModelsByParameters(params, tenantId);
+    }
+
+    @Override
     public List<Model> findByModelTypeAndFilter(Integer modelType, String filter, String sort) {
         Map<String, Object> params = new HashMap<>();
         params.put("modelType", modelType);
         params.put("filter", filter);
         params.put("sort", sort);
         return findModelsByParameters(params);
+    }
+
+    @Override
+    public List<Model> findByModelTypeAndFilter(Integer modelType, String filter, String sort, String tenantId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("modelType", modelType);
+        params.put("filter", filter);
+        params.put("sort", sort);
+        return findModelsByParameters(params, tenantId);
     }
 
     @Override
@@ -87,7 +105,16 @@ public class ModelRepositoryImpl implements ModelRepository {
     }
 
     protected List<Model> findModelsByParameters(Map<String, Object> parameters) {
+        // If no tenant given, use the default
         parameters.put("tenantId", tenantProvider.getTenantId());
+        return sqlSessionTemplate.selectList(NAMESPACE + "selectModelByParameters", parameters);
+    }
+
+    protected List<Model> findModelsByParameters(Map<String, Object> parameters, String tenantId) {
+        if (tenantProvider.getTenantIds().isEmpty() || !tenantProvider.getTenantIds().contains(tenantId)) {
+            return Collections.emptyList();
+        }
+        parameters.put("tenantId", tenantId);
         return sqlSessionTemplate.selectList(NAMESPACE + "selectModelByParameters", parameters);
     }
 

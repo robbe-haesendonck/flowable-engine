@@ -182,8 +182,8 @@ flowableModeler
         .determinePreferredLanguage();
 
   }])
-  .run(['$rootScope', '$timeout', '$modal', '$translate', '$location', '$http', '$window',
-        function($rootScope, $timeout, $modal, $translate, $location, $http, $window) {
+  .run(['$rootScope', '$timeout', '$modal', '$translate', '$location', '$cookies', '$http', '$window', '$route',
+        function($rootScope, $timeout, $modal, $translate, $location, $cookies, $http, $window, $route) {
 
             // set angular translate fallback language
             $translate.fallbackLanguage(['en']);
@@ -352,10 +352,27 @@ flowableModeler
             $http.get(FLOWABLE.APP_URL.getAccountUrl())
 	        	.success(function (data, status, headers, config) {
 	              	$rootScope.account = data;
+	              	// Check whether user has set a tenant already
+	              	if ($cookies["selectedTenantId"] == undefined) {
+	              	    $rootScope.selectedTenantId = $rootScope.account.tenantIds[0];
+	              	    $cookies["selectedTenantId"] = $rootScope.selectedTenantId;
+	              	    setTimeout(function(){ // $cookies polls every 100ms, quick workaround
+                            $route.reload();
+                        }, 105);
+	              	}
 	               	$rootScope.invalidCredentials = false;
 	 				$rootScope.authenticated = true;
 	 				console.info(data);
 	          	});
+
+	        $rootScope.changeSelectedTenant = function () {
+	            // TODO: Add preliminary check whether user is allowed to switch to the selected tenant
+	            console.log("Changing tenant to " + this.selectedTenantId);
+                $cookies["selectedTenantId"] = this.selectedTenantId;
+                setTimeout(function(){ // $cookies polls every 100ms, quick workaround
+                    $route.reload();
+                }, 105);
+	        };
 
 	        $rootScope.logout = function () {
                 $rootScope.authenticated = false;

@@ -42,6 +42,8 @@ public interface SecurityScope {
      */
     String getTenantId();
 
+    Set<String> getTenantIds();
+
     /**
      * Check if the security scope has the given authority.
      *

@@ -20,6 +20,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.Set;
+
 @Component
 public class DefaultTenantProvider implements TenantProvider {
     
@@ -61,6 +64,15 @@ public class DefaultTenantProvider implements TenantProvider {
         LOGGER.debug("No tenantId");
 
         return null;
+    }
+
+    @Override
+    public Set<String> getTenantIds() {
+        SecurityScope currentSecurityScope = SecurityUtils.getCurrentSecurityScope();
+        if (currentSecurityScope != null) {
+            return currentSecurityScope.getTenantIds();
+        }
+        return Collections.emptySet();
     }
     
 }

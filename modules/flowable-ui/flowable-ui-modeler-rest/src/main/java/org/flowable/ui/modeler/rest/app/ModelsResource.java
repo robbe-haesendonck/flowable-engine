@@ -18,9 +18,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.flowable.ui.common.model.ResultListDataRepresentation;
+import org.flowable.ui.common.security.SecurityScope;
 import org.flowable.ui.common.security.SecurityUtils;
 import org.flowable.ui.common.service.exception.ConflictingRequestException;
 import org.flowable.ui.common.service.exception.InternalServerErrorException;
+import org.flowable.ui.common.service.exception.NotPermittedException;
 import org.flowable.ui.modeler.domain.AbstractModel;
 import org.flowable.ui.modeler.domain.Model;
 import org.flowable.ui.modeler.model.ModelKeyRepresentation;
@@ -57,11 +59,18 @@ public class ModelsResource {
     @Autowired
     protected ObjectMapper objectMapper;
 
+    @Autowired
+    protected SecurityScope securityScope;
+
     @GetMapping(value = "/rest/models", produces = "application/json")
-    public ResultListDataRepresentation getModels(@RequestParam(required = false) String filter, @RequestParam(required = false) String sort, @RequestParam(required = false) Integer modelType,
+    public ResultListDataRepresentation getModels(
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) Integer modelType,
+            @RequestParam() String tenantId,
             HttpServletRequest request) {
 
-        return modelQueryService.getModels(filter, sort, modelType, request);
+        return modelQueryService.getModels(filter, sort, modelType, tenantId, request);
     }
 
     @GetMapping(value = "/rest/models-for-app-definition", produces = "application/json")

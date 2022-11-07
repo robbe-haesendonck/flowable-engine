@@ -87,8 +87,10 @@ public class FlowableOAuth2GrantedAuthoritiesMapper implements GrantedAuthoritie
 
             if (StringUtils.isNotBlank(tenantAttribute)) {
                 Object claim = oidcUserAuthority.getUserInfo().getClaim(tenantAttribute);
-                String tenantId = claim.toString();
-                newAuthorities.add(SecurityUtils.createTenantAuthority(tenantId));
+                Collection<String> tenants = asStringCollection(claim);
+                for (String tenant : tenants) {
+                    newAuthorities.add(SecurityUtils.createTenantAuthority(tenant));
+                }
             }
 
         } else if (userAuthority != null) {
@@ -110,8 +112,10 @@ public class FlowableOAuth2GrantedAuthoritiesMapper implements GrantedAuthoritie
 
             if (StringUtils.isNotBlank(tenantAttribute)) {
                 Object attribute = userAuthority.getAttributes().get(tenantAttribute);
-                String tenantId = attribute.toString();
-                newAuthorities.add(SecurityUtils.createTenantAuthority(tenantId));
+                Collection<String> tenants = asStringCollection(attribute);
+                for (String tenant : tenants) {
+                    newAuthorities.add(SecurityUtils.createTenantAuthority(tenant));
+                }
             }
         }
 

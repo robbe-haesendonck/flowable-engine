@@ -12,7 +12,10 @@
  */
 package org.flowable.ui.common.tenant;
 
+import java.util.Set;
 
 public interface TenantProvider {
     String getTenantId();
+
+    Set<String> getTenantIds();
 }

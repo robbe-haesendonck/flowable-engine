@@ -53,7 +53,10 @@ public class OAuth2CurrentUserProvider implements CurrentUserProvider {
         }
 
         SecurityScope securityScope = SecurityUtils.getSecurityScope(authentication);
-        userRepresentation.setTenantId(securityScope.getTenantId());
+
+//        for (String tenantId : securityScope.getTenantIds()) {
+//            userRepresentation.getTenantIds().add(tenantId);
+//        }
 
         for (String groupId : securityScope.getGroupIds()) {
             GroupRepresentation group = new GroupRepresentation();
@@ -78,8 +81,8 @@ public class OAuth2CurrentUserProvider implements CurrentUserProvider {
         userRepresentation.setLastName(getAttribute(lastNameKey, userAttributes, user.getFamilyName()));
 
         // Add tenantId
-        LOGGER.info("Got tenant: " + user.getClaimAsString(tenantKey));
-        userRepresentation.setTenantId(user.getClaimAsString(tenantKey));
+        LOGGER.info(String.format("Got tenants: %s", user.getClaimAsString(tenantKey)));
+        userRepresentation.setTenantIds(user.getClaimAsStringList(tenantKey));
 
         String fullName = getAttribute(fullNameKey, userAttributes, user.getFullName());
         if (StringUtils.isBlank(fullName)) {

@@ -49,10 +49,14 @@ public class ApiModelsResource {
     protected ObjectMapper objectMapper;
 
     @GetMapping(value = "/models", produces = "application/json")
-    public ResultListDataRepresentation getModels(@RequestParam(required = false) String filter, @RequestParam(required = false) String sort, @RequestParam(required = false) Integer modelType,
+    public ResultListDataRepresentation getModels(
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) Integer modelType,
+            @RequestParam() String tenantId,
             HttpServletRequest request) {
 
-        return modelQueryService.getModels(filter, sort, modelType, request);
+        return modelQueryService.getModels(filter, sort, modelType, tenantId, request);
     }
 
     @PostMapping(value = "/import-process-model", produces = "application/json")

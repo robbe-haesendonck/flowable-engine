@@ -13,7 +13,7 @@
 'use strict';
 
 angular.module('flowableModeler')
-  .controller('ProcessesCtrl', ['$rootScope', '$scope', '$translate', '$http', '$timeout','$location', '$modal', function ($rootScope, $scope, $translate, $http, $timeout, $location, $modal) {
+  .controller('ProcessesCtrl', ['$rootScope', '$scope', '$translate', '$http', '$timeout','$location', '$cookies', '$modal', function ($rootScope, $scope, $translate, $http, $timeout, $location, $cookies, $modal) {
 
       // Main page (needed for visual indicator of current page)
       $rootScope.setMainPageById('processes');
@@ -69,7 +69,8 @@ angular.module('flowableModeler')
 		  var params = {
 		      filter: $scope.model.activeFilter.id,
 		      sort: $scope.model.activeSort.id,
-		      modelType: 0
+		      modelType: 0,
+		      tenantId: $cookies["selectedTenantId"]
 		  };
 
 		  if ($scope.model.filterText && $scope.model.filterText != '') {

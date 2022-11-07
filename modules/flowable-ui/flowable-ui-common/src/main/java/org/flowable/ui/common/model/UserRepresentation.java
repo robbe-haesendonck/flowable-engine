@@ -28,6 +28,7 @@ public class UserRepresentation extends AbstractRepresentation {
     protected String email;
     protected String fullName;
     protected String tenantId;
+    protected List<String> tenantIds = new ArrayList<>();
     protected List<GroupRepresentation> groups = new ArrayList<>();
     protected List<String> privileges = new ArrayList<>();
 
@@ -92,11 +93,20 @@ public class UserRepresentation extends AbstractRepresentation {
         return tenantId;
     }
 
+    public List<String> getTenantIds() { return tenantIds; }
+
     public void setTenantId(String tenantId) {
         if (tenantId == null || tenantId.isEmpty())
             this.tenantId = null;
         else
             this.tenantId = tenantId;
+    }
+
+    public void setTenantIds(List<String> tenantIds) {
+        if (tenantIds == null || tenantIds.isEmpty())
+            this.tenantIds = null;
+        else
+            this.tenantIds = tenantIds;
     }
     
     public List<GroupRepresentation> getGroups() {
